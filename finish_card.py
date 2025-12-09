@@ -40,7 +40,7 @@ def finalize_card_styling(card, sides, r1, r2, mode):
         else:
             return FG_BLACK
     if sides == 20:
-        if mode == "Advantage" and kept == 1:
+        if (mode == "Advantage" and kept == 1) or (mode == "Disadvantage" and dropped == 1):
             bg_color = BG_BLACK
             fg_primary = FG_WHITE
             fg_secondary = FG_GREY_LIGHT
@@ -50,7 +50,7 @@ def finalize_card_styling(card, sides, r1, r2, mode):
             fg_primary = fg_colour_picker()
             fg_secondary = fg_colour_picker()
             effect_text = "DOUBLE CRIT!!!"
-        elif kept == 20 and dropped == 1:
+        elif (kept == 20 and dropped == 1) or (kept == 1 and dropped == 20):
             bg_color = BG_PINK
             fg_primary = fg_colour_picker()
             fg_secondary = "white"
@@ -58,18 +58,15 @@ def finalize_card_styling(card, sides, r1, r2, mode):
         elif mode == "Advantage" and dropped == 1 and kept != 20:
             bg_color = BG_LIGHT_BLUE
             fg_primary = FG_GREEN
-            fg_secondary = FG_GREY
             effect_text = "saved"
         elif kept == 20:
             bg_color = BG_GOLD
             fg_primary = fg_colour_picker()
-            fg_secondary = FG_GREY
             effect_text = "critical!"
         elif kept == 1:
             bg_color = BG_RED
             fg_primary = FG_WHITE
             fg_secondary = FG_GREY_LIGHT
-            effect_text = ""
 
     if bg_color == BG_WHITE:
         fg_primary = fg_colour_picker()
