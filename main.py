@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import random
 
 from finish_card import finalize_card_styling
@@ -14,12 +14,11 @@ def change_val(var, delta):
 class StreamDiceApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("DM's Dice Stream")
+        self.root.title("i'm gonna dice")
         self.root.geometry("900x700")
 
         self.dice_types = [4, 6, 8, 10, 12, 20, 100]
         self.dice_vars = {}
-        self.total_sum = 0
 
         style = ttk.Style()
         style.configure("Big.TButton", font=("Segoe UI", 12, "bold"))
@@ -29,14 +28,6 @@ class StreamDiceApp:
         # top section / results screen
         self.stage_frame = tk.Frame(root, bg="#f0f0f0", bd=2, relief="sunken")
         self.stage_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=10, pady=10)
-
-        # total banner
-        self.total_banner_frame = tk.Frame(self.stage_frame, bg="#333", height=60)
-        self.total_banner_frame.pack(side=tk.TOP, fill=tk.X)
-        self.total_banner_frame.pack_propagate(False)
-
-        self.total_label = tk.Label(self.total_banner_frame, text="READY", font=("Segoe UI", 20, "bold"), fg="white", bg="#333")
-        self.total_label.pack(expand=True)
 
         # dice container
         self.results_inner = tk.Frame(self.stage_frame, bg="#f0f0f0")
@@ -96,7 +87,6 @@ class StreamDiceApp:
     def roll_dice(self):
         for widget in self.results_inner.winfo_children():
             widget.destroy()
-        self.total_sum = 0
 
         mode = self.roll_mode.get()
         dice_to_roll = []
@@ -107,8 +97,7 @@ class StreamDiceApp:
                 dice_to_roll.append(sides)
 
         if not dice_to_roll:
-            self.total_label.config(text="SELECT DICE FIRST", fg="#ffcc00")
-            return
+            messagebox.showerror("spast", "please select dice before rolling!")
 
         max_cols = 5 if len(dice_to_roll) > 5 else len(dice_to_roll)
         row_val = 0
@@ -119,14 +108,6 @@ class StreamDiceApp:
             r1 = random.randint(1, sides)
             r2 = random.randint(1, sides)
 
-            if mode == "Normal":
-                kept = r1
-            elif mode == "Advantage":
-                kept = max(r1, r2)
-            elif mode == "Disadvantage":
-                kept = min(r1, r2)
-
-            self.total_sum += kept
             self.create_visual_card(self.results_inner, sides, r1, r2, mode, row_val, col_val)
 
             col_val += 1
@@ -172,10 +153,8 @@ class StreamDiceApp:
             lbl = tk.Label(nums_frame, text="?", font=f_style, fg="black", bg="white")
             lbl.pack()
             self.perform_roll_animation(lbl, card, sides, r1, r2, mode, steps_remaining=10)
-            self.total_label.config(text=f"TOTAL: {self.total_sum}", fg="white")
         else:
             finalize_card_styling(card, sides, r1, r2, mode)
-            self.total_label.config(text=f"TOTAL: {self.total_sum}", fg="white")
 
 
 if __name__ == "__main__":
